@@ -17,6 +17,9 @@ public class PopulationManager : MonoBehaviour
     [SerializeField]
     private float _scalingFactor;
 
+    // quick solution so that all population object attached by this controller with 
+    // the same DatabaseManager (attached using unity editor)
+    [SerializeField]
     private float _oldScalingFactor;
     private PopulationLocations _locations;
     private List<GameObject> _populations;
@@ -48,7 +51,15 @@ public class PopulationManager : MonoBehaviour
         {
             var normalizedLocation = (location.Value - _locations.Min) / _scalingFactor;
 
-            var population = Instantiate<GameObject>(_populationPrefab, new Vector3(normalizedLocation.x, transform.position.y, normalizedLocation.y), Quaternion.identity);
+            var population = Instantiate<GameObject>(
+                _populationPrefab
+                , new Vector3(normalizedLocation.x, transform.position.y, normalizedLocation.y)
+                , Quaternion.identity
+                );
+            
+            //upon creation, attach population controller
+            PopulationController pc = population.AddComponent(typeof(PopulationController)) as PopulationController;    
+            pc._databaseManager = _databaseManager;
             population.transform.parent = transform;
             population.name = location.Key.ToString();
 
