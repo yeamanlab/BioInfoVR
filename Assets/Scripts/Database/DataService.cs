@@ -88,24 +88,30 @@ namespace Database
         }
 
 
-        public List<Samples> GetSamplesForPopulation(Populations populations)
+        public List<Samples> GetSamplesForPopulation(int populationId)
         {
-            var returnSamples = new List<Samples>();
-            var populations2Samples = GetSamplesToPopulations();
-            var samples = GetSamples();
-            foreach (var pop2sam in populations2Samples)
-            {
-                if (populations.PopulationId.Equals(pop2sam.PopulationId))
-                {
-                    var sample = samples.Where(t => t.SampleId.Equals(pop2sam.SampleId));
-                    if (sample.Any())
-                    {
-                        returnSamples.Add(sample.First());
-                    }
-                }
-            }
-
-
+            // testing out query by SQL
+            string getSamplesForPopulationQuery =
+            $@"SELECT *
+            FROM Samples as S
+            WHERE S.SampleId in (
+                SELECT S2.SampleId
+                FROM SamplesToPopulations as S2
+                WHERE S2.PopulationId == { populationId }
+            )";
+            // var populations2Samples = GetSamplesToPopulations();
+            List<Samples> returnSamples = _connection.Query<Samples>(getSamplesForPopulationQuery);
+            // foreach (var s in populations2Samples)
+            // {
+            //     if (populations.PopulationId.Equals(pop2sam.PopulationId))
+            //     {
+            //         var sample = samples.Where(t => t.SampleId.Equals(pop2sam.SampleId));
+            //         if (sample.Any())
+            //         {
+            //             returnSamples.Add(sample.First());
+            //         }
+            //     }
+            // }
             return returnSamples;
         }
         
