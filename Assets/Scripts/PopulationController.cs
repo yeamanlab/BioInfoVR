@@ -26,7 +26,8 @@ public class PopulationController : MonoBehaviour, IPointerClickHandler
         _canvas.enabled = false;
     }
 
-    private bool Showing(){
+    private bool Showing()
+    {
         return _canvas.enabled;
     }
 
