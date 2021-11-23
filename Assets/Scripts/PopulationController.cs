@@ -41,7 +41,10 @@ public class PopulationController : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData pointerEventData)
     {
         if(Showing())Hide();
-        else Show();
+        else 
+        {
+            Show();
+        }
         Debug.Log(name);
         var sampleList =  _databaseManager.GetSamplesForPopulation(Int32.Parse(name));
         Debug.Log("Samples: ");
