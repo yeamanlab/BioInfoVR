@@ -44,7 +44,10 @@ public class PopulationController : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData pointerEventData)
     {
-        if(Showing())Hide();
+        if (Showing())
+        {
+            Hide();
+        }
         else 
         {
             Show();
