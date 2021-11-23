@@ -21,7 +21,8 @@ public class PopulationController : MonoBehaviour, IPointerClickHandler
     {
         
     }
-    private void Awake() {
+    private void Awake() 
+    {
         _canvas = transform.Find("Canvas").GetComponent<Canvas>();
         _canvas.enabled = false;
     }
