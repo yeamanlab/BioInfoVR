@@ -30,7 +30,8 @@ public class PopulationController : MonoBehaviour, IPointerClickHandler
         return _canvas.enabled;
     }
 
-    private void Hide(){
+    private void Hide()
+    {
         _canvas.enabled = false;
     }
 
