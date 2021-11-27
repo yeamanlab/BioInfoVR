@@ -22,6 +22,7 @@ public class PopulationController : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData pointerEventData)
     {
+        // under assumption name is popylation id
         var sampleList =  _databaseManager.GetSamplesForPopulation(Int32.Parse(name));
         _canvasManager.setSampleList(sampleList);
         _canvasManager.setPopulationId(Int32.Parse(name));
