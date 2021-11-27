@@ -16,10 +16,10 @@ public class PopulationManager : MonoBehaviour
 
     [SerializeField]
     private float _scalingFactor;
-
-    // quick solution so that all population object attached by this controller with 
-    // the same DatabaseManager (attached using unity editor)
+    
     [SerializeField]
+    private Canvas _graphCanvas;
+
     private float _oldScalingFactor;
     private PopulationLocations _locations;
     private List<GameObject> _populations;
@@ -31,6 +31,7 @@ public class PopulationManager : MonoBehaviour
         Debug.Log("Spawning populations...");
         Task.Run(() => InitializePopulations());
         StartCoroutine(SpawnPopulationsWhenReady());
+        _graphCanvas.enabled = false;
     }
 
     private async void InitializePopulations()
@@ -57,12 +58,11 @@ public class PopulationManager : MonoBehaviour
                 , Quaternion.identity
                 );
             
-            //upon creation, attach population controller
             PopulationController pc = population.AddComponent(typeof(PopulationController)) as PopulationController;    
-            pc._databaseManager = _databaseManager;
+            pc.setDatabaseManager(_databaseManager);
+            pc.setCanvasManager(_graphCanvas.GetComponent<CanvasManager>());
             population.transform.parent = transform;
             population.name = location.Key.ToString();
-
             _populations.Add(population);
         }
 

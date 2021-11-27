@@ -99,19 +99,7 @@ namespace Database
                 FROM SamplesToPopulations as S2
                 WHERE S2.PopulationId == { populationId }
             )";
-            // var populations2Samples = GetSamplesToPopulations();
             List<Samples> returnSamples = _connection.Query<Samples>(getSamplesForPopulationQuery);
-            // foreach (var s in populations2Samples)
-            // {
-            //     if (populations.PopulationId.Equals(pop2sam.PopulationId))
-            //     {
-            //         var sample = samples.Where(t => t.SampleId.Equals(pop2sam.SampleId));
-            //         if (sample.Any())
-            //         {
-            //             returnSamples.Add(sample.First());
-            //         }
-            //     }
-            // }
             return returnSamples;
         }
         
