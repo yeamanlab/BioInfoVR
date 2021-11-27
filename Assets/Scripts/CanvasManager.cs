@@ -51,34 +51,4 @@ public class CanvasManager : MonoBehaviour {
         _populationId = populationId;
     }
 
-    
-    // public void draw(){
-
-    //     GameObject gameObject = new GameObject("dotConnection" , typeof(Image));
-    //     gameObject.transform.SetParent(_graphContainer, false);
-    //     RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
-    //     rectTransform.anchorMin = new Vector2(0,0);
-    //     rectTransform.anchorMax = new Vector2(0,0);
-    //     rectTransform.pivot = new Vector2(0, 0);
-    //     float max = 100.0f;
-    //     float maxX = _graphContainer.sizeDelta.x;
-    //     float maxY = _graphContainer.sizeDelta.y;
-
-    //     Debug.Log(maxX);
-    //     Debug.Log(maxY);
-    //     rectTransform.sizeDelta = new Vector2(maxX,1.0f);
-    //     float x = xPos/max * maxX - maxX;
-    //     float y = yPos/max * maxY - maxY;
-    //     rectTransform.anchoredPosition = new Vector2(x,y);
-
-    // }
-
-    // private IReadOnlyDictionary<int, Color32> _colorMap = new Dictionary<int, Color32> 
-    // {
-    //     {-1, new Color32(255, 255, 255, 100)},
-    //     {1, new Color32(0, 255, 255, 100)},
-    //     {2, new Color32(255, 0,  255, 100)},
-
-    // };
-
 }
