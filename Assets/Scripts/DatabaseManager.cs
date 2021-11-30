@@ -34,7 +34,7 @@ public class DatabaseManager : MonoBehaviour
         var populationInDb = _dataService.GetPopulations();
         foreach (var pop in populationInDb)
         {
-            var samples = _dataService.GetSamplesForPopulation(pop);
+            var samples = _dataService.GetSamplesForPopulation(pop.PopulationId);
             var position = new Vector2();
             var firstSample = true;
             foreach (var sample in samples)
@@ -55,5 +55,9 @@ public class DatabaseManager : MonoBehaviour
         }
 
         return locations;
+    }
+
+    public List<Samples> GetSamplesForPopulation(int populationId){
+        return _dataService.GetSamplesForPopulation(populationId);
     }
 }

@@ -16,6 +16,9 @@ public class PopulationManager : MonoBehaviour
 
     [SerializeField]
     private float _scalingFactor;
+    
+    [SerializeField]
+    private Canvas _graphCanvas;
 
     private float _oldScalingFactor;
     private PopulationLocations _locations;
@@ -28,6 +31,7 @@ public class PopulationManager : MonoBehaviour
         Debug.Log("Spawning populations...");
         Task.Run(() => InitializePopulations());
         StartCoroutine(SpawnPopulationsWhenReady());
+        _graphCanvas.enabled = false;
     }
 
     private async void InitializePopulations()
@@ -48,10 +52,17 @@ public class PopulationManager : MonoBehaviour
         {
             var normalizedLocation = (location.Value - _locations.Min) / _scalingFactor;
 
-            var population = Instantiate<GameObject>(_populationPrefab, new Vector3(normalizedLocation.x, transform.position.y, normalizedLocation.y), Quaternion.identity);
+            var population = Instantiate<GameObject>(
+                _populationPrefab
+                , new Vector3(normalizedLocation.x, transform.position.y, normalizedLocation.y)
+                , Quaternion.identity
+                );
+            
+            PopulationController pc = population.AddComponent(typeof(PopulationController)) as PopulationController;    
+            pc.setDatabaseManager(_databaseManager);
+            pc.setCanvasManager(_graphCanvas.GetComponent<CanvasManager>());
             population.transform.parent = transform;
             population.name = location.Key.ToString();
-
             _populations.Add(population);
         }
 
