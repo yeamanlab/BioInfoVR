@@ -32,6 +32,7 @@ public class PopulationManager : MonoBehaviour
         Task.Run(() => InitializePopulations());
         StartCoroutine(SpawnPopulationsWhenReady());
         _graphCanvas.enabled = false;
+        _graphCanvas.GetComponent<CanvasManager>()._databaseManager = _databaseManager;
     }
 
     private async void InitializePopulations()
