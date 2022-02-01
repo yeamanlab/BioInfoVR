@@ -15,17 +15,22 @@ public class CanvasManager : MonoBehaviour
     private int _populationId;
     private int _prevPopulationId;
     private RectTransform _graphContainer;
-    float maxX;
-    float maxY;
+    private decimal maxX;
+    private decimal maxY;
+
+    private int countX;
+    private int countY;
+    private bool drawing;
+    private List<Records> recordList;
     private void Awake()
     {
         _canvas = GetComponent<Canvas>();
         _sampleList = new List<Samples>();
         _populationId = -1;
         _prevPopulationId = -1;
-        _graphContainer = transform.Find("GraphWrapper").Find("GraphContainer").GetComponent<RectTransform>();
-        maxX = _graphContainer.sizeDelta.x;
-        maxY = _graphContainer.sizeDelta.y;
+        _graphContainer = transform.Find("GraphWrapper").Find("GraphContainer").Find("BlockContainer").GetComponent<RectTransform>();
+        maxX = (decimal) _graphContainer.sizeDelta.x;
+        maxY = (decimal) _graphContainer.sizeDelta.y;
     }
 
     private void Update()
@@ -35,11 +40,107 @@ public class CanvasManager : MonoBehaviour
             foreach (Transform child in _graphContainer.transform) {
                 GameObject.Destroy(child.gameObject);
             }
-            Debug.Log(_populationId);
+            _sampleList = _databaseManager.GetSamplesForPopulation(_populationId);
+            countY = 0;
+            recordList = _databaseManager.GetRecordListFromPopulation(_sampleList[countY]);
+            countX = 0;
+            type = recordList[countX].GenotypeId;
+            posX = 0;
+            drawing = true;
+            Debug.Log("begin graphing");
+        }
+
+        if(drawing){
             DrawFromPopulation();
         }
+
         _prevPopulationId = _populationId;
     }
+
+
+    private int type;
+    private int posX;
+    private void DrawFromPopulation()
+    {
+        if(countX >= recordList.Count){
+            countY ++;
+            if (countY >= _sampleList.Count){
+                drawing = false;
+                Debug.Log("finished graphing");
+                return;
+            } 
+            countX = 0;
+            posX = 0;
+            recordList = _databaseManager.GetRecordListFromPopulation(_sampleList[countY]);
+            type = recordList[countX].GenotypeId;
+        }
+        
+
+
+        Records record = recordList[countX];
+        
+        if(record.GenotypeId != type){
+            Draw((decimal) posX/recordList.Count, (decimal) countY/_sampleList.Count, (decimal) (countX - posX)/recordList.Count, (decimal) 1/_sampleList.Count, type);
+            type = record.GenotypeId;
+            posX = countX;
+        }
+
+        countX ++;
+
+        
+        // Debug.Log("Drawing graph...");
+        // int rowCount = _sampleList.Count;
+        // float sizeY = 1.0f / rowCount;
+        // float posY = 0;
+        // for (int i = 0; i < rowCount; i++)
+        // {
+        //     List<Records> recordList = _databaseManager.GetRecordListFromPopulation(_sampleList[i]);
+        //     int j = 0;
+        //     float posX = (float) j/ recordList.Count;
+        //     float sizeX = 1.0f / recordList.Count;
+        //     int type = recordList[0].GenotypeId;
+        //     while (++j < recordList.Count)
+        //     {
+        //         if (recordList[j].GenotypeId != type)
+        //         {
+        //             float newPosX = (float) j/ recordList.Count;
+        //             Draw(posX, posY, newPosX - posX, sizeY, type);
+        //             posX = newPosX;
+        //             type = recordList[j].GenotypeId;
+        //         }
+        //     }
+        //     posY += sizeY;
+        //     }
+        // Debug.Log("Finished drawing graph");
+    }
+    private void Draw(decimal posX, decimal posY, decimal sizeX, decimal sizeY, int type)
+    {
+        if(type == -1) return;
+
+        GameObject gameObject = new GameObject("block", typeof(Image));
+        gameObject.transform.SetParent(_graphContainer, false);
+        RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
+
+        Image gameImage = gameObject.GetComponent<Image>();
+        gameImage.color = _colorMap[type];
+
+        rectTransform.anchorMin = new Vector2(0, 0);
+        rectTransform.anchorMax = new Vector2(0, 0);
+        rectTransform.pivot = new Vector2(0, 0);
+
+        rectTransform.sizeDelta = new Vector2((float) (sizeX * maxX),(float) (sizeY * maxY));
+        decimal x = posX * maxX - maxX / 2;
+        decimal y = posY * maxY - maxY / 2;
+        rectTransform.anchoredPosition = new Vector2((float)x,(float) y);
+    }
+
+    private IReadOnlyDictionary<int, Color32> _colorMap = new Dictionary<int, Color32>
+    {
+        {-1, new Color32(255, 255, 255, 255)},
+        {0  , new Color32(232, 178, 14, 255)},
+        {1, new Color32(5, 33, 94, 255)},
+        {2, new Color32(179, 0, 0, 255)},
+    };
 
     public bool Showing()
     {
@@ -65,63 +166,4 @@ public class CanvasManager : MonoBehaviour
     {
         _populationId = populationId;
     }
-
-    public void DrawFromPopulation()
-    {
-        Debug.Log("Drawing graph...");
-        int rowCount = _sampleList.Count;
-        float sizeY = 1.0f / rowCount;
-        float posY = 0;
-        for (int i = 0; i < rowCount; i++)
-        {
-            List<Records> recordList = _databaseManager.GetRecordListFromPopulation(_sampleList[i]);
-            int j = 0;
-            float posX = (float) j/ recordList.Count;
-            float sizeX = 1.0f / recordList.Count;
-            int type = recordList[0].GenotypeId;
-            while (++j < recordList.Count)
-            {
-                if (recordList[j].GenotypeId == type)
-                {
-                    sizeX += 1.0f / recordList.Count;
-                }
-                else
-                {
-                    Draw(posX, posY, sizeX, sizeY, type);
-                    posX = (float) j/ recordList.Count;
-                    sizeX = 1.0f / recordList.Count;
-                    type = recordList[j].GenotypeId;
-                }
-            }
-            posY += sizeY;
-            }
-        Debug.Log("Finished drawing graph");
-    }
-    public void Draw(float posX, float posY, float sizeX, float sizeY, int type)
-    {
-        GameObject gameObject = new GameObject("block", typeof(Image));
-        gameObject.transform.SetParent(_graphContainer, false);
-        RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
-
-        Image gameImage = gameObject.GetComponent<Image>();
-        gameImage.color = _colorMap[type];
-
-        rectTransform.anchorMin = new Vector2(0, 0);
-        rectTransform.anchorMax = new Vector2(0, 0);
-        rectTransform.pivot = new Vector2(0, 0);
-
-        rectTransform.sizeDelta = new Vector2(sizeX * maxX, sizeY * maxY);
-        float x = posX * maxX - maxX / 2;
-        float y = posY * maxY - maxY / 2;
-        rectTransform.anchoredPosition = new Vector2(x, y);
-    }
-
-    private IReadOnlyDictionary<int, Color32> _colorMap = new Dictionary<int, Color32>
-    {
-        {-1, new Color32(255, 255, 255, 255)},
-        {0  , new Color32(232, 178, 14, 255)},
-        {1, new Color32(5, 33, 94, 255)},
-        {2, new Color32(179, 0, 0, 255)},
-    };
-
 }
