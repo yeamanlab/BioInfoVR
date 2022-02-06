@@ -20,12 +20,14 @@ public class PopulationController : MonoBehaviour, IPointerClickHandler
         _canvasManager = cm;
     }
 
+     private void Awake() {
+    }
     public void OnPointerClick(PointerEventData pointerEventData)
     {
-        // under assumption name is popylation id
+        // under assumption name is population id
         var sampleList =  _databaseManager.GetSamplesForPopulation(Int32.Parse(name));
-        _canvasManager.setSampleList(sampleList);
-        _canvasManager.setPopulationId(Int32.Parse(name));
-        _canvasManager.show();
+        _canvasManager.SetSampleList(sampleList);
+        _canvasManager.SetPopulationId(Int32.Parse(name));
+        _canvasManager.Show();
     }
 }

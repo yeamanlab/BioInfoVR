@@ -71,6 +71,15 @@ namespace Database
 
         }
 
+        public List<Records> GetRecordListFromPopulation(int sampleId)
+        {
+            string getRecord =
+            $@"SELECT *
+            FROM Records as R
+            WHERE R.SampleId == {sampleId}";
+            List<Records> returnRecord = _connection.Query<Records>(getRecord);
+            return returnRecord;
+        }
 
         public IEnumerable<Samples> GetSamples()
         {
