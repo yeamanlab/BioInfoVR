@@ -40,14 +40,16 @@ public class CanvasManager : MonoBehaviour
             foreach (Transform child in _graphContainer.transform) {
                 GameObject.Destroy(child.gameObject);
             }
-            _sampleList = _databaseManager.GetSamplesForPopulation(_populationId);
-            countY = 0;
-            recordList = _databaseManager.GetRecordListFromPopulation(_sampleList[countY]);
-            countX = 0;
-            type = recordList[countX].GenotypeId;
-            posX = 0;
-            drawing = true;
-            Debug.Log("begin graphing");
+            // _sampleList = _databaseManager.GetSamplesForPopulation(_populationId);
+            // countY = 0;
+            // recordList = _databaseManager.GetRecordListFromPopulation(_sampleList[countY]);
+            // countX = 0;
+            // type = recordList[countX].GenotypeId;
+            // posX = 0;
+            // drawing = true;
+            // Debug.Log("begin graphing");
+
+            
         }
 
         if(drawing){

@@ -22,14 +22,14 @@ namespace Database
 #if UNITY_EDITOR
             var dbPath = string.Format(@"Assets/StreamingAssets/{0}", DatabaseName);
 #else
-        // check if file exists in Application.persistentDataPath
-        var filepath = string.Format("{0}/{1}", Application.persistentDataPath, DatabaseName);
+            // check if file exists in Application.persistentDataPath
+            var filepath = string.Format("{0}/{1}", Application.persistentDataPath, DatabaseName);
 
-        if (!File.Exists(filepath))
-        {
-            Debug.Log("Database not in Persistent path");
-            // if it doesn't ->
-            // open StreamingAssets directory and load the db ->
+            if (!File.Exists(filepath))
+            {
+                Debug.Log("Database not in Persistent path");
+                // if it doesn't ->
+                // open StreamingAssets directory and load the db ->
 
 #if UNITY_ANDROID
             var loadDb = new WWW("jar:file://" + Application.dataPath + "!/assets/" + DatabaseName);  // this is the path to your StreamingAssets in android
@@ -55,16 +55,16 @@ namespace Database
 		// then save to Application.persistentDataPath
 		File.Copy(loadDb, filepath);
 #else
-	var loadDb = Application.dataPath + "/StreamingAssets/" + DatabaseName;  // this is the path to your StreamingAssets in iOS
-	// then save to Application.persistentDataPath
-	File.Copy(loadDb, filepath);
+                var loadDb = Application.dataPath + "/StreamingAssets/" + DatabaseName;  // this is the path to your StreamingAssets in iOS
+                                                                                         // then save to Application.persistentDataPath
+                File.Copy(loadDb, filepath);
 
 #endif
 
-            Debug.Log("Database written");
-        }
+                Debug.Log("Database written");
+            }
 
-        var dbPath = filepath;
+            var dbPath = filepath;
 #endif
             _connection = new SQLiteConnection(dbPath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
             Debug.Log("Final PATH: " + dbPath);
@@ -79,6 +79,11 @@ namespace Database
             WHERE R.SampleId == {sampleId}";
             List<Records> returnRecord = _connection.Query<Records>(getRecord);
             return returnRecord;
+        }
+
+        public IEnumerable<Geno2> GetGeno2()
+        {
+            return _connection.Table<Geno2>();
         }
 
         public IEnumerable<Samples> GetSamples()
@@ -111,7 +116,7 @@ namespace Database
             List<Samples> returnSamples = _connection.Query<Samples>(getSamplesForPopulationQuery);
             return returnSamples;
         }
-        
+
 
     }
 }
