@@ -31,7 +31,7 @@ public class CanvasManager : MonoBehaviour
         _populationId = -1;
         _prevPopulationId = -1;
 
-        /// Get _graphContainer from Unity
+        /// Get _graphContainer from MainScence
         _graphContainer = transform.Find("GraphWrapper").Find("GraphContainer").Find("BlockContainer").GetComponent<RectTransform>();
         maxX = (decimal) _graphContainer.sizeDelta.x;
         maxY = (decimal) _graphContainer.sizeDelta.y;
@@ -66,12 +66,10 @@ public class CanvasManager : MonoBehaviour
             Debug.Log("begin graphing");
         }
 
-        /// Start drawing
         if(drawing){
             DrawFromPopulation();
         }
 
-        /// Update _prevPopulation Id
         _prevPopulationId = _populationId;
     }
 

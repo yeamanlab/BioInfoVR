@@ -67,28 +67,10 @@ public class DatabaseManager : MonoBehaviour
         return locations;
     }
 
-    /// <summary>
-    /// Gets samples for population with a provided id
-    /// </summary>
-    /// <param name="populationId" >
-    /// an integer indicates the population ID
-    /// </param>
-    /// <return>
-    /// A list of samples for population
-    /// </return>
     public List<Samples> GetSamplesForPopulation(int populationId){
         return _dataService.GetSamplesForPopulation(populationId);
     }
 
-    /// <summary>
-    /// Attempts to get a list of records from a sample
-    /// </summary>
-    /// <param name="samples">
-    /// The Samples from which generates a list of records
-    /// </pram>
-    /// <return>
-    /// A list of records 
-    /// </return>
     internal List<Records> GetRecordListFromPopulation(Samples samples)
     {
         return _dataService.GetRecordListFromPopulation(samples.SampleId);
