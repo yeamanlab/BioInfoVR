@@ -35,6 +35,9 @@ public class PopulationManager : MonoBehaviour
         _graphCanvas.GetComponent<CanvasManager>()._databaseManager = _databaseManager;
     }
 
+    /// <summary>
+    /// Initializes population locations
+    /// </summary>
     private async void InitializePopulations()
     {
         _oldScalingFactor = _scalingFactor;
@@ -42,9 +45,14 @@ public class PopulationManager : MonoBehaviour
         Debug.Log("Locations ready");
     }
 
-
+    /// <summary>
+    /// Spawns populations after population locations is ready
+    /// by generating new game object in consistent with each population location
+    /// then adds the object as a population to _polulations
+    /// </summary>
     private IEnumerator SpawnPopulationsWhenReady()
     {
+        /// Waits until population locations is ready
         yield return new WaitWhile(() => _locations == null);
 
         var scaler = new Vector2(_locations.Max.x - _locations.Min.x, _locations.Max.y - _locations.Min.y) / 10.0f;

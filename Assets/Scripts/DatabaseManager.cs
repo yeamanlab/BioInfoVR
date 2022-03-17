@@ -12,9 +12,12 @@ public class DatabaseManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _dataService = new DataService ("database.db");
+        _dataService = new DataService ("database.db"); //connect to database
     }
 
+    /// <summary>
+    /// Add all populations to a list
+    /// </summary>
     public List<Populations> GetPopulations()
     {
         var populations = new List<Populations>();
@@ -27,7 +30,14 @@ public class DatabaseManager : MonoBehaviour
         return populations;
     }
 
-
+    /// <summary>
+    /// Attempts to get the population locations as a Vector 2
+    /// with Latitude and Longitude information in Samples table
+    /// then add the location to population locations along with population ID
+    /// </summary>
+    /// <return>
+    /// A PopulationLocations which contains all sample locations of a population
+    /// </return>
     public PopulationLocations GetPopulationLocations()
     {
         var locations = new PopulationLocations();
@@ -57,10 +67,28 @@ public class DatabaseManager : MonoBehaviour
         return locations;
     }
 
+    /// <summary>
+    /// Gets samples for population with a provided id
+    /// </summary>
+    /// <param name="populationId" >
+    /// an integer indicates the population ID
+    /// </param>
+    /// <return>
+    /// A list of samples for population
+    /// </return>
     public List<Samples> GetSamplesForPopulation(int populationId){
         return _dataService.GetSamplesForPopulation(populationId);
     }
 
+    /// <summary>
+    /// Attempts to get a list of records from a sample
+    /// </summary>
+    /// <param name="samples">
+    /// The Samples from which generates a list of records
+    /// </pram>
+    /// <return>
+    /// A list of records 
+    /// </return>
     internal List<Records> GetRecordListFromPopulation(Samples samples)
     {
         return _dataService.GetRecordListFromPopulation(samples.SampleId);
