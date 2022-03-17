@@ -12,9 +12,12 @@ public class DatabaseManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _dataService = new DataService ("database.db");
+        _dataService = new DataService ("database.db"); //connect to database
     }
 
+    /// <summary>
+    /// Add all populations to a list
+    /// </summary>
     public List<Populations> GetPopulations()
     {
         var populations = new List<Populations>();
@@ -27,7 +30,14 @@ public class DatabaseManager : MonoBehaviour
         return populations;
     }
 
-
+    /// <summary>
+    /// Attempts to get the population locations as a Vector 2
+    /// with Latitude and Longitude information in Samples table
+    /// then add the location to population locations along with population ID
+    /// </summary>
+    /// <return>
+    /// A PopulationLocations which contains all sample locations of a population
+    /// </return>
     public PopulationLocations GetPopulationLocations()
     {
         var locations = new PopulationLocations();

@@ -42,7 +42,11 @@ public class PopulationManager : MonoBehaviour
         Debug.Log("Locations ready");
     }
 
-
+    /// <summary>
+    /// Spawns populations by generating new game object
+    /// in consistent with each population location
+    /// then adds the object as a population to _polulations
+    /// </summary>
     private IEnumerator SpawnPopulationsWhenReady()
     {
         yield return new WaitWhile(() => _locations == null);

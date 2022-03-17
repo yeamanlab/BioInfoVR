@@ -22,26 +22,42 @@ public class CanvasManager : MonoBehaviour
     private int countY;
     private bool drawing;
     private List<Records> recordList;
+
+    /// Setup canvas
     private void Awake()
     {
         _canvas = GetComponent<Canvas>();
         _sampleList = new List<Samples>();
         _populationId = -1;
         _prevPopulationId = -1;
+
+        /// Get _graphContainer from MainScence
         _graphContainer = transform.Find("GraphWrapper").Find("GraphContainer").Find("BlockContainer").GetComponent<RectTransform>();
         maxX = (decimal) _graphContainer.sizeDelta.x;
         maxY = (decimal) _graphContainer.sizeDelta.y;
     }
 
+    /// <summary>
+    /// Check every frame if a new tree object has been clicked
+    /// If so, it destroys the current graph,
+    /// reads records of the new population from database
+    /// and starts drawing
+    /// </summary>
     private void Update()
     {
+        /// Only run when clicking on a new tree object/population
         if (_populationId != _prevPopulationId)
         {
+            /// Destroy the graph
             foreach (Transform child in _graphContainer.transform) {
-                GameObject.Destroy(child.gameObject);
+                GameObject.Destroy(child.gameObject);  
             }
+
+            /// Get sampleList for the clicked population
             _sampleList = _databaseManager.GetSamplesForPopulation(_populationId);
             countY = 0;
+
+            /// Get recordList for the clicked population
             recordList = _databaseManager.GetRecordListFromPopulation(_sampleList[countY]);
             countX = 0;
             type = recordList[countX].GenotypeId;
@@ -60,6 +76,7 @@ public class CanvasManager : MonoBehaviour
 
     private int type;
     private int posX;
+
     private void DrawFromPopulation()
     {
         if(countX >= recordList.Count){
@@ -134,6 +151,9 @@ public class CanvasManager : MonoBehaviour
         rectTransform.anchoredPosition = new Vector2((float)x,(float) y);
     }
 
+    /// <summary>
+    /// Color mapping for different genotype
+    /// </summary>
     private IReadOnlyDictionary<int, Color32> _colorMap = new Dictionary<int, Color32>
     {
         {-1, new Color32(255, 255, 255, 255)},
