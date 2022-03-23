@@ -59,3 +59,6 @@ sysinfo.txt
 crashlytics-build.properties
 
 Assets/StreamingAssets/database.db
+database.db
+Assets/StreamingAssets/database.db-journal.meta
+Assets/StreamingAssets/database.db.meta
