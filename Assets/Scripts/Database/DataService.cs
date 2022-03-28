@@ -73,10 +73,10 @@ namespace Database
 
         public List<Records> GetRecordListFromPopulation(int sampleId)
         {
+            string sampleName = "sample" + sampleId.ToString();
             string getRecord =
             $@"SELECT *
-            FROM Records as R
-            WHERE R.SampleId == {sampleId}";
+            FROM {sampleName}";
             List<Records> returnRecord = _connection.Query<Records>(getRecord);
             return returnRecord;
         }
