@@ -35,7 +35,7 @@ public class CanvasManager : MonoBehaviour
     public List<NativeArray<decimal>> genotypeArrays = new List<NativeArray<decimal>>();
 
     /// Setup canvas
-    private void Awake()
+    private async void Awake()
     {
         this._canvas = GetComponent<Canvas>();
         _sampleList = new List<Samples>();
@@ -47,6 +47,7 @@ public class CanvasManager : MonoBehaviour
         maxX = (decimal)_graphContainer.sizeDelta.x;
         maxY = (decimal)_graphContainer.sizeDelta.y;
         _dataService = new DataService ("database.db");
+        
     }
 
     /// <summary>
@@ -55,17 +56,7 @@ public class CanvasManager : MonoBehaviour
     /// reads records of the new population from database
     /// and starts drawing
     /// </summary>
-    // private void Update()
-    // {
-    //     if (_populationId != _prevPopulationId)
-    //     {
-    //         _sampleList = _databaseManager.GetSamplesForPopulation(_populationId);
-    //         DrawFromPopulation();
-    //     }
-
-    //     _prevPopulationId = _populationId;
-    // }
-    private async void Update()
+    private void Update()
     {
         float startTime = Time.realtimeSinceStartup;
         if (_populationId != _prevPopulationId)
@@ -73,17 +64,9 @@ public class CanvasManager : MonoBehaviour
             _sampleList = _databaseManager.GetSamplesForPopulation(_populationId);
             
             //Setup canvas for Graphing
-            // Draw(0, 0, 1, 1, 0);
-            int rowCount = _sampleList.Count;
-            float sizeY = 1.0f / rowCount;
-            // float posY = 0;
+            
             NativeList<JobHandle> jobHandleList = new NativeList<JobHandle>(Allocator.Temp);
             Debug.Log("start");
-            // Debug.Log(_populationId);
-
-            // List<NativeArray<decimal>> positionXArrays = new List<NativeArray<decimal>>();
-            // List<NativeArray<decimal>> sizeXArrays = new List<NativeArray<decimal>>();
-            // List<NativeArray<decimal>> genotypeArrays = new List<NativeArray<decimal>>();
 
             for (int i = 0; i< _sampleList.Count; i++){
                 NativeArray<decimal> positionXArray = new NativeArray<decimal>(75000, Allocator.TempJob);
@@ -96,18 +79,33 @@ public class CanvasManager : MonoBehaviour
                 
                 JobHandle jobHandle = DrawJobs(i);
                 jobHandleList.Add(jobHandle);
-
-                // List<int> recordList = _dataService.GetRecordGenoFromPopulation(_sampleList[i].SampleId);
-                // Debug.Log("Time taken: " + (Time.realtimeSinceStartup - startTime) * 1000f + "ms ; Sample: " + _sampleList[i].SampleId);
-                // startTime = Time.realtimeSinceStartup;
-                // return;
-                // posY += sizeY;
             }
             JobHandle.CompleteAll(jobHandleList);
             jobHandleList.Dispose();
+
+
+            Draw(0, 0, 1, 1, 0);
+            int rowCount = _sampleList.Count;
+            float sizeY = 1.0f / rowCount;
+            float posY = 0;
+            for (int j = 0; j< _sampleList.Count; j++){
+                Debug.Log(_sampleList[j].SampleName);            
+                for (int i = 0; i < genotypeArrays[j].Length ; i++){
+                    if (genotypeArrays[j][i] == 0) break;
+                    Draw((decimal) positionXArrays[j][i], (decimal)posY, (decimal) sizeXArrays[j][i], (decimal) sizeY,(int) genotypeArrays[j][i]);
+                }
+                posY += sizeY;
+            }
+
+            for (int i = 0; i< _sampleList.Count; i++){
+                positionXArrays[i].Dispose();
+                sizeXArrays[i].Dispose();
+                genotypeArrays[i].Dispose();
+            }
+            
+            Debug.Log("end");
         }
         _prevPopulationId = _populationId;
-        Debug.Log("end");
     }
 
     private JobHandle DrawJobs(int index)
@@ -182,145 +180,31 @@ public struct ReallyToughJob : IJob {
     public NativeArray<decimal> genotypeArray;
     public int sampleId;
     public void Execute() {
-        // Represents a tough task like some pathfinding or a really complex calculation
-        // Debug.Log(index);
-        
-    }
-
-}
-
-[BurstCompile]
-public struct ReallyToughParallelJob : IJobParallelFor {
-
-    public NativeArray<NativeArray<decimal>> positionXArray;
-    public NativeArray<NativeArray<decimal>> sizeXArray;
-    public NativeArray<NativeArray<decimal>> genotypeArray;
-    [ReadOnly] public float deltaTime;
-
-    public void Execute(int index) {
-        
-    }
-
-}
-
-
-// public struct DrawEachPopulation : IJob
-// {
-//     private int _sampleId;
-//     private RectTransform _graphContainer;
-//     private decimal maxX;
-//     private decimal maxY;
-//     private float posY;
-//     private float sizeY;
-//     // 
-//     public DatabaseManager _databaseManager; //global
-
-//     public DrawEachPopulation(int sId, RectTransform gContainter, decimal mx, decimal my, float py, float sy, DatabaseManager db){
-//         _databaseManager = db;
-//         _sampleId = sId;
-//         _graphContainer = gContainter;
-//         maxX = mx;
-//         maxY = my;
-//         posY = py;
-//         sizeY = sy;
-//          _colorMap = new Dictionary<int, Color32>
-//         {
-//             {-1, new Color32(255, 255, 255, 255)},
-//             {0  , new Color32(232, 178, 14, 255)},
-//             {1, new Color32(5, 33, 94, 255)},
-//             {2, new Color32(179, 0, 0, 255)},
-//         };
-//     }
-    
-//     public void Execute()
-//     {
-//         List<Records> recordList = _databaseManager.GetRecordListFromPopulation(_sampleId);
-//         int j = 0;
-//         float posX = (float)j / recordList.Count;
-//         float sizeX = 1.0f / recordList.Count;
-//         int type = recordList[0].GenotypeId;
-//         while (++j < recordList.Count)
-//         {
-//             if (recordList[j].GenotypeId != type)
-//             {
-//                 float newPosX = (float)j / recordList.Count;
-//                 if (type != 0)
-//                     Draw((decimal)posX, (decimal)posY, (decimal)(newPosX - posX), (decimal)sizeY, type);
-//                 type = recordList[j].GenotypeId;
-//                 posX = newPosX;
-//             }
-//         }
-//     }
-//     void Draw(decimal posX, decimal posY, decimal sizeX, decimal sizeY, int type)
-//     {
-//         GameObject block = new GameObject("block", typeof(Image));
-//         block.transform.SetParent(_graphContainer, false);
-//         RectTransform rectTransform = block.GetComponent<RectTransform>();
-
-//         Image gameImage = block.GetComponent<Image>();
-//         gameImage.color = _colorMap[type];
-
-//         rectTransform.anchorMin = new Vector2(0, 0);
-//         rectTransform.anchorMax = new Vector2(0, 0);
-//         rectTransform.pivot = new Vector2(0, 0);
-
-//         rectTransform.sizeDelta = new Vector2((float)(sizeX * maxX), (float)(sizeY * maxY));
-//         decimal x = posX * maxX - maxX / 2;
-//         decimal y = posY * maxY - maxY / 2;
-//         rectTransform.anchoredPosition = new Vector2((float)x, (float)y);
-//     }
-
-//     private IReadOnlyDictionary<int, Color32> _colorMap;
-// }
-public struct DrawBySample : IJobParallelFor
-{
-    private int _sampleId;
-    private RectTransform _graphContainer;
-    private decimal maxX;
-    private decimal maxY;
-    private float posY;
-    private float sizeY;
-    // 
-    public DatabaseManager _databaseManager; //global
- 
-    
-    public void Execute(int SampleId)
-    {
-        List<Records> recordList = _databaseManager.GetRecordListFromPopulation(_sampleId);
-        int j = 0;
-        float posX = (float)j / recordList.Count;
+        DataService ds = new DataService ("database.db");
+        List<int> recordList = ds.GetRecordGenoFromPopulation(sampleId);
+        int index = 0;
+        int logIndex = 0;
+        float posX = (float) index/ recordList.Count;
         float sizeX = 1.0f / recordList.Count;
-        int type = recordList[0].GenotypeId;
-        while (++j < recordList.Count)
-        {
-            if (recordList[j].GenotypeId != type)
-            {
-                float newPosX = (float)j / recordList.Count;
-                if (type != 0)
-                    Draw((decimal)posX, (decimal)posY, (decimal)(newPosX - posX), (decimal)sizeY, type);
-                type = recordList[j].GenotypeId;
-                posX = newPosX;
-            }
+
+        int type = recordList[0];
+        while(++index < recordList.Count){
+            if (recordList[index] != type)
+                {
+                    float newPosX = (float) index/ recordList.Count;
+                    if(type != 0)
+                    {
+                        positionXArray[logIndex] = (decimal) posX;
+                        sizeXArray[logIndex] = (decimal) (newPosX - posX);
+                        genotypeArray[logIndex++] = (decimal) type;
+
+                    }
+                    type = recordList[index];
+                    posX = newPosX;
+                }
         }
-    }
-    void Draw(decimal posX, decimal posY, decimal sizeX, decimal sizeY, int type)
-    {
-        GameObject block = new GameObject("block", typeof(Image));
-        block.transform.SetParent(_graphContainer, false);
-        RectTransform rectTransform = block.GetComponent<RectTransform>();
 
-        Image gameImage = block.GetComponent<Image>();
-        gameImage.color = _colorMap[type];
-
-        rectTransform.anchorMin = new Vector2(0, 0);
-        rectTransform.anchorMax = new Vector2(0, 0);
-        rectTransform.pivot = new Vector2(0, 0);
-
-        rectTransform.sizeDelta = new Vector2((float)(sizeX * maxX), (float)(sizeY * maxY));
-        decimal x = posX * maxX - maxX / 2;
-        decimal y = posY * maxY - maxY / 2;
-        rectTransform.anchoredPosition = new Vector2((float)x, (float)y);
+        genotypeArray[logIndex] = 0;
     }
 
-    private IReadOnlyDictionary<int, Color32> _colorMap;
 }

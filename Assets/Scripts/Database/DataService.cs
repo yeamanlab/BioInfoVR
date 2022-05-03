@@ -83,12 +83,7 @@ namespace Database
 
         public List<int> GetRecordGenoFromPopulation(int sampleId)
         {
-            string sampleName = "sample" + sampleId.ToString();
-            string getRecord =
-            $@"SELECT GenotypeId
-            FROM {sampleName}";
-            List<int> returnRecord = _connection.Query<int>(getRecord);
-            return returnRecord;
+            return this.GetRecordListFromPopulation(sampleId).Select(u => u.GenotypeId).ToList();
         }
 
         public IEnumerable<Samples> GetSamples()
