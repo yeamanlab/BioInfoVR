@@ -71,8 +71,8 @@ public class DatabaseManager : MonoBehaviour
         return _dataService.GetSamplesForPopulation(populationId);
     }
 
-    internal List<Records> GetRecordListFromPopulation(Samples samples)
+    internal List<Records> GetRecordListFromPopulation(int samplesId)
     {
-        return _dataService.GetRecordListFromPopulation(samples.SampleId);
+        return _dataService.GetRecordListFromPopulation(samplesId);
     }
 }

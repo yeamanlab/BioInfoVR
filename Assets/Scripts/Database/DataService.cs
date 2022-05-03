@@ -81,6 +81,11 @@ namespace Database
             return returnRecord;
         }
 
+        public List<int> GetRecordGenoFromPopulation(int sampleId)
+        {
+            return this.GetRecordListFromPopulation(sampleId).Select(u => u.GenotypeId).ToList();
+        }
+
         public IEnumerable<Samples> GetSamples()
         {
             return _connection.Table<Samples>();
