@@ -23,10 +23,12 @@ public class PopulationController : MonoBehaviour, IPointerClickHandler
      private void Awake() {
     }
 
+    /// <summary>
     /// This method is called when clicking on a tree object
     /// It then passes the property 'name' of the object as population id
     /// to GetSamplesForPopulation to get a list of samples belongs to the population
     /// The sample list is passed to Canvas Manager for drawing
+    /// </summary>
     public void OnPointerClick(PointerEventData pointerEventData)
     {
         // under assumption name is population id

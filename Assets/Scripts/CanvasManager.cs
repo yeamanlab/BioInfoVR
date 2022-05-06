@@ -51,10 +51,9 @@ public class CanvasManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Check every frame if a new tree object has been clicked
-    /// If so, it destroys the current graph,
-    /// reads records of the new population from database
-    /// and starts drawing
+    /// if a new tree object has been clicked, destroys the current graph,
+    /// then, reads data of the new population using job system
+    /// and starts drawing new graph
     /// </summary>
     private void Update()
     {
@@ -63,8 +62,8 @@ public class CanvasManager : MonoBehaviour
         {
             _sampleList = _databaseManager.GetSamplesForPopulation(_populationId);
             
-            //Setup canvas for Graphing
-            
+            /// Create Job System
+            /// Each job reads data from one sample
             NativeList<JobHandle> jobHandleList = new NativeList<JobHandle>(Allocator.Temp);
             Debug.Log("start");
 
@@ -77,13 +76,14 @@ public class CanvasManager : MonoBehaviour
                 sizeXArrays.Add(sizeXArray);
                 genotypeArrays.Add(genotypeArray);
                 
-                JobHandle jobHandle = DrawJobs(i);
+                JobHandle jobHandle = ReadDataJob(i);
                 jobHandleList.Add(jobHandle);
             }
             JobHandle.CompleteAll(jobHandleList);
             jobHandleList.Dispose();
 
 
+            ///Draw graph
             Draw(0, 0, 1, 1, 0);
             int rowCount = _sampleList.Count;
             float sizeY = 1.0f / rowCount;
@@ -108,7 +108,8 @@ public class CanvasManager : MonoBehaviour
         _prevPopulationId = _populationId;
     }
 
-    private JobHandle DrawJobs(int index)
+    /// Job Handler
+    private JobHandle ReadDataJob(int index)
     {
         ReallyToughJob job = new ReallyToughJob{
             positionXArray = positionXArrays[index],
@@ -144,6 +145,7 @@ public class CanvasManager : MonoBehaviour
         _populationId = populationId;
     }
 
+    /// draws blocks of genotypes with different colors corresponding to different genotypes
     void Draw(decimal posX, decimal posY, decimal sizeX, decimal sizeY, int type)
     {
         GameObject block = new GameObject("block", typeof(Image));
@@ -172,6 +174,11 @@ public class CanvasManager : MonoBehaviour
     };
 }
 
+
+/// <summary>
+/// The job reads all records from a sample
+/// then calculates the size of each genotype block
+/// </summary>
 [BurstCompile]
 public struct ReallyToughJob : IJob {
 
