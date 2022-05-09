@@ -24,10 +24,10 @@ public class CanvasManager : MonoBehaviour
 
     private int countX;
     private int countY;
-    private bool drawing;
-    private List<Records> recordList;
+    // private bool drawing;
+    // private List<Records> recordList;
 
-    private int type;
+    // private int type;
     private int posX;
     private DataService _dataService;
     public List<NativeArray<decimal>> positionXArrays = new List<NativeArray<decimal>>();

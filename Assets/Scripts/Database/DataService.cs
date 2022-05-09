@@ -104,7 +104,6 @@ namespace Database
 
         public List<Samples> GetSamplesForPopulation(int populationId)
         {
-            // testing out query by SQL
             string getSamplesForPopulationQuery =
             $@"SELECT *
             FROM Samples as S
