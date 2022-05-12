@@ -2,25 +2,20 @@
 
 ## Author Contact Information
 
+- samuel.yeaman@ucalgary.ca
+- john.kohout@unity3d.com
 
-samuel.yeaman@ucalgary.ca
-john.kohout@unity3d.com
-
-### Assistant
-khoa.nguyentrandang@ucalgary.ca
-anh.nguyen5@ucalgary.ca
+### Assistants
+- khoa.nguyentrandang@ucalgary.ca
+- anh.nguyen5@ucalgary.ca
 
 ## Usage and license information
 
 If you use or are inspired by code in this repository please cite the following work or contact me about how to cite. Please also see [license information](LICENSE).
 
----
-
 # BioVR
 
 Brief blurb about the motivation and structure of this repository, including outcomes (if applicable).
-
----
 
 ## Environment setup
 
