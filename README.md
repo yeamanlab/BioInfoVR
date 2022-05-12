@@ -52,7 +52,7 @@ The database used contains:
 - 719 samples
 - 53821464 records
 
-Each population contains 1-10 samples. And one sample contains 74856 records. Thus we want to find a solution that can graph 10 * 74856 records for each population to achieve the same outcome as in : https://jimw91.shinyapps.io/genotype_plot_demo/
+Each population contains 1-10 samples. And one sample contains 74856 records. Thus we want to find a solution that can graph 10 * 74856 records for each population to achieve the same outcome as in : https://jimw91.shinyapps.io/genotype_plot_demo/.
 
 Techniques we used, in order:
 
