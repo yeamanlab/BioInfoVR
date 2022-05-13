@@ -15,7 +15,7 @@ If you use or are inspired by code in this repository please cite the following 
 
 # BioVR
 
-Brief blurb about the motivation and structure of this repository, including outcomes (if applicable).
+The aim of this repository is to develop a method for plotting patterns in genomic data in VR space, to enable rapid and intuitive visualization. Users inhabit a VR landscape with spatial representation of the populations included in the study, and eventually this will include functionality for users to select populations that will be subsampled and plotted. Currently, bottlenecks in pulling data from the database prevent rapid visualization of these patterns, so this represents one approach to extracting information.
 
 ## Environment setup
 
